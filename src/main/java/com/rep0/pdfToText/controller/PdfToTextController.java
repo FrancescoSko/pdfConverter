@@ -11,10 +11,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PdfToTextController implements PdfToTextApi{
 
-    private PdfToTextService pdfToTextService;
 
     @Override
     public ResponseEntity<Response> uploadSinglePDF(MultipartFile file) {
+
     }
 
     @Override

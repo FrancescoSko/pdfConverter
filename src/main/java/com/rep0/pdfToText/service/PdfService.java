@@ -21,20 +21,25 @@ public class PdfService {
      * @return the extracted text content of the PDF
      */
     public String extractTextFromPDF(MultipartFile multipartFile) {
-        File tempFile = convertMultipartFileToFile(multipartFile);
 
-        try (PDDocument document = PDDocument.load(tempFile)) {
-            PDFTextStripper pdfStripper = new PDFTextStripper();
-            return pdfStripper.getText(document);
-        } catch (IOException e) {
-            throw new PdfProcessingException("Error during PDF processing", e);
+        File tempFile = null;
+
+        try {
+            tempFile = convertMultipartFileToFile(multipartFile);
+
+            try (PDDocument document = PDDocument.load(tempFile)) {
+                PDFTextStripper pdfTextStripper = new PDFTextStripper();
+                return pdfTextStripper.getText(document);
+            } catch (IOException e) {
+                throw new PdfProcessingException("Error processing PDF file", e);
+            }
         } finally {
-            // Ensure the temporary file is deleted after processing
-            if (tempFile.exists() && !tempFile.delete()) {
-                System.err.println("Failed to delete temporary file: " + tempFile.getAbsolutePath());
+            if (tempFile != null) {
+                tempFile.delete();
             }
         }
     }
+
 
     /**
      * Extracts text content from multiple PDF files.
